@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import Piece from '@/components/Piece'
+import Piece from './Piece'
 export default {
   name: 'game',
   components: {
