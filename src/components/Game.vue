@@ -1,7 +1,14 @@
 <template>
   <div id='game'>
     <h1><span>S</span>nake</h1>
-    <ul class='row'>
+
+    <div class='score' v-if='gameOver === false'>
+      <div class='pellet-count'>Eaten {{ pelletCount }}</div>
+      <div class='distance-travelled'>Travelled {{ tick }}</div>
+      <div class='clearfix' />
+    </div>
+
+    <ul class='row' v-if='gameOver === false'>
       <li v-for='row in parseInt(rows)' :key='row' :id='"row-" + row'>
         <ul class='column'>
           <li
@@ -16,6 +23,15 @@
         </ul>
       </li>
     </ul>
+
+    <div v-else class='game-over'>
+      <h2><span>G</span>ame <span>O</span>ver</h2>
+
+      <p>Pellets: <span>{{ pelletCount }}</span></p>
+      <p>Spaces: <span>{{ tick }}</span></p>
+
+      <button v-on:click='retry'>Retry</button>
+    </div>
   </div>
 </template>
 
@@ -28,6 +44,7 @@ export default {
   },
   data () {
     return {
+      snakePosition: [],
       snakeDirection: 'right',
       snakePrevDirection: 'right',
       snakeNextDirection: '',
@@ -37,27 +54,42 @@ export default {
       tickRate: 1000,
       tickFunction: () => {},
       pelletPosition: [],
-      snakeGrowing: false
-    }
-  },
-  computed: {
-    snakePosition () {
-      let result = []
-      const row = Math.floor(this.rows / 2)
-      const column = Math.floor(this.columns / 2)
-      result[result.length] = [row, column]
-      return result
+      pelletCount: 0,
+      snakeGrowing: false,
+      gameOver: false
     }
   },
   props: ['columns', 'rows'],
   created () {
-    this.setPelletPosition()
+    this.initializeGame()
     window.addEventListener('keyup', this.onKeyUp)
-    this.tickFunction = window.setInterval(() => {
-      this.tick++
-    }, this.tickRate)
   },
   methods: {
+    initializeGame () {
+      this.setSnakePosition()
+      this.snakeDirection = 'right'
+      this.snakePrevDirection = 'right'
+      this.snakeNextDirection = ''
+      this.pelletPosition = []
+      this.setPelletPosition()
+      this.paintBoard()
+      this.gameOver = false
+      this.tickRate = 1000
+      this.tick = 0
+      this.pelletCount = 0
+
+      this.tickFunction = window.setInterval(() => {
+        this.tick++
+      }, this.tickRate)
+    },
+    setSnakePosition () {
+      let result = []
+      const row = Math.floor(this.rows / 2)
+      const column = Math.floor(this.columns / 2)
+      result[result.length] = [row, column]
+      result[result.length] = [row, column - 1]
+      this.snakePosition = result
+    },
     paintBoard () {
       let result = []
       const rows = this.rows || 0
@@ -85,8 +117,8 @@ export default {
       this.boardState = result
     },
     preventReverseDirection () {
-      const nextDir = this.snakeNextDirection;
-      const prevDir = this.snakePrevDirection;
+      const nextDir = this.snakeNextDirection
+      const prevDir = this.snakePrevDirection
 
       if (
         (nextDir === 'up' && prevDir === 'down') ||
@@ -142,18 +174,24 @@ export default {
         (nextPosition[1] === this.pelletPosition[1])
       ) {
         collided = 'pellet'
+        this.pelletCount++
       }
 
       if ((collided === 'wall') || (collided === 'snake')) {
         // game over
         window.clearInterval(this.tickFunction)
+        this.gameOver = true
         return true
       } else if (collided === 'pellet') {
         this.boardState[this.pelletPosition[0]][this.pelletPosition[1]].state = 'empty'
         this.snakeGrowing = true
-        if (this.tickRate > 100) {
+
+        if (this.tickRate > 200) {
           this.tickRate = this.tickRate - 50
+        } else if (this.tickRate > 100) {
+          this.tickRate = this.tickRate - 10
         }
+
         this.setPelletPosition()
         window.clearInterval(this.tickFunction)
         this.tickFunction = window.setInterval(() => {
@@ -203,6 +241,9 @@ export default {
       } else {
         this.pelletPosition = pelletPosition
       }
+    },
+    retry () {
+      this.initializeGame()
     }
   },
   watch: {
@@ -229,19 +270,55 @@ export default {
 
 body {
   background: #000;
+  color: #fff;
   font-family: 'Baloo', cursive;
 }
+
 h1 {
-  color: #fff;
-  font-size: 36pt;
+  font-size: 48pt;
   margin-bottom: 10px;
 }
 
-h1 span {
+span {
   color: lightgreen;
 }
+
+h2 {
+  font-size: 36pt;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 24pt;
+  margin-bottom: 10px;
+}
+
 #game {
   width: 260px;
   margin: 40px auto 0;
+}
+
+.pellet-count {
+  float: left;
+}
+
+.distance-travelled {
+  float: right;
+}
+
+.clearfix {
+  clear: both;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px;
+  font-family: 'Baloo', cursive;
+  font-size: 24pt;
+  line-height: 24pt;
+}
+
+button:hover {
+  background: #ddd;
 }
 </style>
