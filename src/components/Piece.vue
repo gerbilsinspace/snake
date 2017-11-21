@@ -24,9 +24,10 @@ export default {
     height: 20px;
     border: 1px solid #000;
     margin: 2px;
+    border-radius: 3px;
   }
   #piece.empty {
-    background: #fff;
+    background: #333;
   }
   #piece.pellet {
     background: orangered;
