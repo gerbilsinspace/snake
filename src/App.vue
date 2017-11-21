@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Game rows=10 columns=10 />
+    <Game />
   </div>
 </template>
 
