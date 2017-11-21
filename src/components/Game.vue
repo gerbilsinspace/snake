@@ -1,5 +1,6 @@
 <template>
   <div id='game'>
+    <h1><span>S</span>nake</h1>
     <ul class='row'>
       <li v-for='row in parseInt(rows)' :key='row' :id='"row-" + row'>
         <ul class='column'>
@@ -28,7 +29,8 @@ export default {
   data () {
     return {
       snakeDirection: 'right',
-      nextSnakeDirection: '',
+      snakePrevDirection: 'right',
+      snakeNextDirection: '',
       boardState: [],
       nextPosition: [],
       tick: 0,
@@ -82,14 +84,30 @@ export default {
 
       this.boardState = result
     },
+    preventReverseDirection () {
+      const nextDir = this.snakeNextDirection;
+      const prevDir = this.snakePrevDirection;
+
+      if (
+        (nextDir === 'up' && prevDir === 'down') ||
+        (nextDir === 'right' && prevDir === 'left') ||
+        (nextDir === 'down' && prevDir === 'up') ||
+        (nextDir === 'left' && prevDir === 'right')
+      ) {
+        this.snakeNextDirection = ''
+      }
+    },
     getNextPosition () {
       const snakeHead = this.snakePosition[0]
       let hPos = snakeHead[0]
       let wPos = snakeHead[1]
 
-      if (this.nextSnakeDirection.length > 0) {
-        this.snakeDirection = this.nextSnakeDirection
-        this.nextSnakeDirection = ''
+      this.preventReverseDirection()
+
+      if (this.snakeNextDirection.length > 0) {
+        this.snakeDirection = this.snakeNextDirection
+        this.snakeNextDirection = ''
+        this.snakePrevDirection = this.snakeDirection
       }
 
       if (this.snakeDirection === 'up') {
@@ -101,6 +119,7 @@ export default {
       } else if (this.snakeDirection === 'left') {
         wPos--
       }
+
       this.nextPosition = [hPos, wPos]
     },
     handleCollisions () {
@@ -152,15 +171,7 @@ export default {
         case 'right':
         case 'down':
         case 'left':
-          if (
-            ((nextDirection === 'up') && (this.snakeDirection === 'down')) ||
-            ((nextDirection === 'right' && this.snakeDirection === 'left')) ||
-            ((nextDirection === 'down' && this.snakeDirection === 'up')) ||
-            ((nextDirection === 'left' && this.snakeDirection === 'right'))
-          ) {
-            return
-          }
-          this.snakeDirection = nextDirection
+          this.snakeNextDirection = nextDirection
           break
         default:
           break
@@ -214,4 +225,23 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Baloo');
+
+body {
+  background: #000;
+  font-family: 'Baloo', cursive;
+}
+h1 {
+  color: #fff;
+  font-size: 36pt;
+  margin-bottom: 10px;
+}
+
+h1 span {
+  color: lightgreen;
+}
+#game {
+  width: 260px;
+  margin: 40px auto 0;
+}
 </style>

@@ -29,9 +29,9 @@ export default {
     background: #fff;
   }
   #piece.pellet {
-    background: yellow;
+    background: orangered;
   }
   #piece.snake {
-    background: green;
+    background: lightgreen;
   }
 </style>
