@@ -2,35 +2,43 @@
   <div id='game'>
     <h1><span>S</span>nake</h1>
 
-    <div class='score' v-if='gameOver === false'>
-      <div class='pellet-count'>Eaten {{ pelletCount }}</div>
-      <div class='distance-travelled'>Travelled {{ tick }}</div>
-      <div class='clearfix' />
+    <div v-if='playing === false'>
+      <p>WASD or Arrow keys to move</p>
+
+      <button v-on:click='start'>Start</button>
     </div>
 
-    <ul class='row' v-if='gameOver === false'>
-      <li v-for='row in parseInt(rows)' :key='row' :id='"row-" + row'>
-        <ul class='column'>
-          <li
-            v-for='column in parseInt(columns)'
-            :key='row + "" + column'
-            :id='row + "" + column'
-          >
-            <span v-if='boardState && boardState[row] && boardState[row][column]'>
-              <Piece :state='boardState[row][column].state || {}' />
-            </span>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <div v-else>
+      <div class='score' v-if='gameOver === false'>
+        <div class='pellet-count'>Eaten {{ pelletCount }}</div>
+        <div class='distance-travelled'>Travelled {{ tick }}</div>
+        <div class='clearfix' />
+      </div>
 
-    <div v-else class='game-over'>
-      <h2><span>G</span>ame <span>O</span>ver</h2>
+      <ul class='row' v-if='gameOver === false'>
+        <li v-for='row in parseInt(rows)' :key='row' :id='"row-" + row'>
+          <ul class='column'>
+            <li
+              v-for='column in parseInt(columns)'
+              :key='row + "" + column'
+              :id='row + "" + column'
+            >
+              <span v-if='boardState && boardState[row] && boardState[row][column]'>
+                <Piece :state='boardState[row][column].state || {}' />
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
 
-      <p>Pellets: <span>{{ pelletCount }}</span></p>
-      <p>Spaces: <span>{{ tick }}</span></p>
+      <div v-else class='game-over'>
+        <h2><span>G</span>ame <span>O</span>ver</h2>
 
-      <button v-on:click='retry'>Retry</button>
+        <p>Pellets: <span>{{ pelletCount }}</span></p>
+        <p>Spaces: <span>{{ tick }}</span></p>
+
+        <button v-on:click='retry'>Retry</button>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +52,7 @@ export default {
   },
   data () {
     return {
+      playing: false,
       snakePosition: [],
       snakeDirection: 'right',
       snakePrevDirection: 'right',
@@ -61,10 +70,14 @@ export default {
   },
   props: ['columns', 'rows'],
   created () {
-    this.initializeGame()
+    window.removeEventListener('keyup', this.onKeyUp)
     window.addEventListener('keyup', this.onKeyUp)
   },
   methods: {
+    start () {
+      this.playing = true
+      this.initializeGame()
+    },
     initializeGame () {
       this.setSnakePosition()
       this.snakeDirection = 'right'
@@ -178,7 +191,6 @@ export default {
       }
 
       if ((collided === 'wall') || (collided === 'snake')) {
-        // game over
         window.clearInterval(this.tickFunction)
         this.gameOver = true
         return true
@@ -203,13 +215,23 @@ export default {
       return false
     },
     onKeyUp (event) {
-      const nextDirection = event.code.toLowerCase().replace('arrow', '')
+      const nextDirection = event.code.toLowerCase().replace('arrow', '').replace('key', '')
       switch (nextDirection) {
         case 'up':
+        case 'w':
+          this.snakeDirection = 'up'
+          break
         case 'right':
+        case 'd':
+          this.snakeDirection = 'right'
+          break
         case 'down':
+        case 's':
+          this.snakeDirection = 'down'
+          break
         case 'left':
-          this.snakeNextDirection = nextDirection
+        case 'a':
+          this.snakeDirection = 'left'
           break
         default:
           break
