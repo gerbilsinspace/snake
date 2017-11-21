@@ -70,8 +70,8 @@ export default {
   },
   props: ['columns', 'rows'],
   created () {
-    window.removeEventListener('keyup', this.onKeyUp)
-    window.addEventListener('keyup', this.onKeyUp)
+    window.removeEventListener('keydown', this.onKeyPress)
+    window.addEventListener('keydown', this.onKeyPress)
   },
   methods: {
     start () {
@@ -214,7 +214,7 @@ export default {
 
       return false
     },
-    onKeyUp (event) {
+    onKeyPress (event) {
       const nextDirection = event.code.toLowerCase().replace('arrow', '').replace('key', '')
       switch (nextDirection) {
         case 'up':
