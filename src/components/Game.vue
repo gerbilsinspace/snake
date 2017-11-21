@@ -52,6 +52,8 @@ export default {
   },
   data () {
     return {
+      rows: 10,
+      columns: 10,
       playing: false,
       snakePosition: [],
       snakeDirection: 'right',
@@ -68,7 +70,6 @@ export default {
       gameOver: false
     }
   },
-  props: ['columns', 'rows'],
   created () {
     window.removeEventListener('keydown', this.onKeyPress)
     window.addEventListener('keydown', this.onKeyPress)
@@ -219,19 +220,19 @@ export default {
       switch (nextDirection) {
         case 'up':
         case 'w':
-          this.snakeDirection = 'up'
+          this.snakeNextDirection = 'up'
           break
         case 'right':
         case 'd':
-          this.snakeDirection = 'right'
+          this.snakeNextDirection = 'right'
           break
         case 'down':
         case 's':
-          this.snakeDirection = 'down'
+          this.snakeNextDirection = 'down'
           break
         case 'left':
         case 'a':
-          this.snakeDirection = 'left'
+          this.snakeNextDirection = 'left'
           break
         default:
           break
@@ -286,61 +287,3 @@ export default {
   }
 }
 </script>
-
-<style>
-@import url('https://fonts.googleapis.com/css?family=Baloo');
-
-body {
-  background: #000;
-  color: #fff;
-  font-family: 'Baloo', cursive;
-}
-
-h1 {
-  font-size: 48pt;
-  margin-bottom: 10px;
-}
-
-span {
-  color: lightgreen;
-}
-
-h2 {
-  font-size: 36pt;
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 24pt;
-  margin-bottom: 10px;
-}
-
-#game {
-  width: 260px;
-  margin: 40px auto 0;
-}
-
-.pellet-count {
-  float: left;
-}
-
-.distance-travelled {
-  float: right;
-}
-
-.clearfix {
-  clear: both;
-}
-
-button {
-  margin-top: 20px;
-  padding: 10px;
-  font-family: 'Baloo', cursive;
-  font-size: 24pt;
-  line-height: 24pt;
-}
-
-button:hover {
-  background: #ddd;
-}
-</style>

@@ -17,22 +17,3 @@ export default {
   props: ['state']
 }
 </script>
-
-<style>
-  #piece {
-    width: 20px;
-    height: 20px;
-    border: 1px solid #000;
-    margin: 2px;
-    border-radius: 3px;
-  }
-  #piece.empty {
-    background: #333;
-  }
-  #piece.pellet {
-    background: orangered;
-  }
-  #piece.snake {
-    background: lightgreen;
-  }
-</style>

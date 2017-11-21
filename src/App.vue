@@ -15,6 +15,8 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Baloo');
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -80,4 +82,76 @@ li {
 .column li {
   float: left;
 }
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: 'Baloo', cursive;
+}
+
+h1 {
+  font-size: 48pt;
+  margin-bottom: 10px;
+}
+
+span {
+  color: lightgreen;
+}
+
+h2 {
+  font-size: 36pt;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 24pt;
+  margin-bottom: 10px;
+}
+
+#game {
+  width: 260px;
+  margin: 40px auto 0;
+}
+
+.pellet-count {
+  float: left;
+}
+
+.distance-travelled {
+  float: right;
+}
+
+.clearfix {
+  clear: both;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px;
+  font-family: 'Baloo', cursive;
+  font-size: 24pt;
+  line-height: 24pt;
+}
+
+button:hover {
+  background: #ddd;
+}
+
+#piece {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #000;
+  margin: 2px;
+  border-radius: 3px;
+}
+#piece.empty {
+  background: #333;
+}
+#piece.pellet {
+  background: orangered;
+}
+#piece.snake {
+  background: lightgreen;
+}
+
 </style>
