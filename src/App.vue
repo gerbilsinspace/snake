@@ -44,12 +44,8 @@
 </template>
 
 <script>
-import Piece from '@/components/Piece'
 export default {
   name: 'game',
-  components: {
-    Piece
-  },
   data () {
     return {
       rows: 10,
@@ -131,7 +127,6 @@ export default {
       this.boardState = result
     },
     preventReverseDirection () {
-      const nextDirs = this.snakeNextDirections
       const prevDir = this.snakePrevDirection
       const invalidPairs = [['up', 'down'], ['left', 'right']]
 
@@ -190,7 +185,15 @@ export default {
         collided = 'wall'
       }
 
-      if (this.snakePosition.find(
+      const snakeNoTailPosition = this.snakePosition.reduce((result, item) => {
+        if (result.length === this.snakePosition.length - 1) {
+          return result
+        }
+
+        return [...result, item]
+      }, [])
+
+      if (snakeNoTailPosition.find(
         el => (
           nextPosition[0] === el[0] && nextPosition[1] === el[1]
         )
