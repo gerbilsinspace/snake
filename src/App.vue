@@ -57,8 +57,8 @@ export default {
       playing: false,
       snakePosition: [],
       snakeDirection: 'right',
-      snakePrevDirection: 'right',
-      snakeNextDirection: '',
+      snakePrevDirection: '',
+      snakeNextDirections: [],
       boardState: [],
       nextPosition: [],
       tick: 0,
@@ -83,7 +83,7 @@ export default {
       this.setSnakePosition()
       this.snakeDirection = 'right'
       this.snakePrevDirection = 'right'
-      this.snakeNextDirection = ''
+      this.snakeNextDirections = []
       this.pelletPosition = []
       this.setPelletPosition()
       this.paintBoard()
@@ -131,28 +131,39 @@ export default {
       this.boardState = result
     },
     preventReverseDirection () {
-      const nextDir = this.snakeNextDirection
+      const nextDirs = this.snakeNextDirections
       const prevDir = this.snakePrevDirection
+      const invalidPairs = [['up', 'down'], ['left', 'right']]
 
-      if (
-        (nextDir === 'up' && prevDir === 'down') ||
-        (nextDir === 'right' && prevDir === 'left') ||
-        (nextDir === 'down' && prevDir === 'up') ||
-        (nextDir === 'left' && prevDir === 'right')
-      ) {
-        this.snakeNextDirection = ''
-      }
+      const validDirs = this.snakeNextDirections.reduce((result, item) => {
+        for (var i = 0; i < invalidPairs.length; i++) {
+          const invalidPair = invalidPairs[i]
+
+          if (
+            (prevDir === invalidPair[0] && item === invalidPair[0]) ||
+            (prevDir === invalidPair[0] && item === invalidPair[1]) ||
+            (prevDir === invalidPair[1] && item === invalidPair[0]) ||
+            (prevDir === invalidPair[1] && item === invalidPair[1])
+          ) {
+            return result
+          }
+        }
+
+        return [...result, item]
+      }, [])
+      this.snakeNextDirections = []
+      return validDirs.pop()
     },
     getNextPosition () {
       const snakeHead = this.snakePosition[0]
       let hPos = snakeHead[0]
       let wPos = snakeHead[1]
 
-      this.preventReverseDirection()
+      const direction = this.preventReverseDirection()
 
-      if (this.snakeNextDirection.length > 0) {
-        this.snakeDirection = this.snakeNextDirection
-        this.snakeNextDirection = ''
+      if (direction) {
+        this.snakeDirection = direction
+        this.snakeNextDirections = []
         this.snakePrevDirection = this.snakeDirection
       }
 
@@ -179,7 +190,11 @@ export default {
         collided = 'wall'
       }
 
-      if (this.snakePosition.find(el => (nextPosition[0] === el[0] && nextPosition[1] === el[1]))) {
+      if (this.snakePosition.find(
+        el => (
+          nextPosition[0] === el[0] && nextPosition[1] === el[1]
+        )
+      )) {
         collided = 'snake'
       }
 
@@ -220,19 +235,19 @@ export default {
       switch (nextDirection) {
         case 'up':
         case 'w':
-          this.snakeNextDirection = 'up'
+          this.snakeNextDirections.push('up')
           break
         case 'right':
         case 'd':
-          this.snakeNextDirection = 'right'
+          this.snakeNextDirections.push('right')
           break
         case 'down':
         case 's':
-          this.snakeNextDirection = 'down'
+          this.snakeNextDirections.push('down')
           break
         case 'left':
         case 'a':
-          this.snakeNextDirection = 'left'
+          this.snakeNextDirections.push('left')
           break
         default:
           break
