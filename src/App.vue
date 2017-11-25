@@ -58,7 +58,7 @@ export default {
       boardState: [],
       nextPosition: [],
       tick: 0,
-      tickRate: 1000,
+      tickRate: 500,
       tickFunction: () => {},
       pelletPosition: [],
       pelletCount: 0,
@@ -84,7 +84,7 @@ export default {
       this.setPelletPosition()
       this.paintBoard()
       this.gameOver = false
-      this.tickRate = 1000
+      this.tickRate = 500
       this.tick = 0
       this.pelletCount = 0
 
@@ -218,9 +218,7 @@ export default {
         this.snakeGrowing = true
 
         if (this.tickRate > 200) {
-          this.tickRate = this.tickRate - 50
-        } else if (this.tickRate > 100) {
-          this.tickRate = this.tickRate - 10
+          this.tickRate = this.tickRate - 20
         }
 
         this.setPelletPosition()
