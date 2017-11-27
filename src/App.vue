@@ -1,21 +1,21 @@
 <template>
   <div id='game'>
-    <h1><span>S</span>nake</h1>
+    <h1><span :style='textColour'>S</span>nake</h1>
 
-    <div v-if='playing === false'>
+    <div v-if='page === "start"'>
       <p>WASD or Arrow keys to move</p>
 
       <button v-on:click='start'>Start</button>
     </div>
 
-    <div v-else>
-      <div class='score' v-if='gameOver === false'>
+    <div v-if='page === "playing"'>
+      <div class='score'>
         <div class='pellet-count'>Eaten {{ pelletCount }}</div>
         <div class='distance-travelled'>Travelled {{ tick }}</div>
         <div class='clearfix' />
       </div>
 
-      <ul class='row' v-if='gameOver === false'>
+      <ul class='row'>
         <li v-for='row in parseInt(rows)' :key='row' :id='"row-" + row'>
           <ul class='column'>
             <li
@@ -24,33 +24,56 @@
               :id='row + "" + column'
             >
               <span v-if='boardState && boardState[row] && boardState[row][column]'>
-                <div id="piece" :class='boardState[row][column].state'></div>
+                <div id="piece" class='empty' v-if='boardState[row][column].state === "empty"' :style='emptyColour' />
+                <div id="piece" class='snake' v-if='boardState[row][column].state === "snake"' :style='snakeColour' />
+                <div id="piece" class='pellet' v-if='boardState[row][column].state === "pellet"' :style='pelletColour' />
               </span>
             </li>
           </ul>
         </li>
       </ul>
-
-      <div v-else class='game-over'>
-        <h2><span>G</span>ame <span>O</span>ver</h2>
-
-        <p>Pellets: <span>{{ pelletCount }}</span></p>
-        <p>Spaces: <span>{{ tick }}</span></p>
-
-        <button v-on:click='retry'>Retry</button>
-      </div>
     </div>
+
+    <div v-if='page === "gameOver"' class='game-over'>
+      <h2><span :style='textColour'>G</span>ame <span :style='textColour'>O</span>ver</h2>
+
+      <p>Pellets: <span :style='textColour'>{{ pelletCount }}</span></p>
+      <p>Spaces: <span :style='textColour'>{{ tick }}</span></p>
+
+      <button v-on:click='retry'>Retry</button>
+      <button v-on:click='showChooseName'>Leaderboard</button>
+    </div>
+
+    <div v-if='page === "chooseName"'>
+      <h2>Choose Name</h2>
+      <div v-if='error.length > 0'>{{ error }}</div>
+      <input v-model='name' />
+      <button v-on:click='showLeaderboard'>Save Score</button>
+    </div>
+
+    <Leaderboard
+      v-if='page === "leaderboard"'
+      :textColour='textColour'
+      :name='name'
+    />
   </div>
 </template>
 
 <script>
+import Leaderboard from '@/components/Leaderboard'
+
 export default {
   name: 'game',
+  components: {
+    Leaderboard
+  },
   data () {
     return {
+      name: '',
+      error: '',
+      page: 'start',
       rows: 10,
       columns: 10,
-      playing: false,
       snakePosition: [],
       snakeDirection: 'right',
       snakePrevDirection: '',
@@ -63,7 +86,10 @@ export default {
       pelletPosition: [],
       pelletCount: 0,
       snakeGrowing: false,
-      gameOver: false
+      textColour: 'color: gold',
+      snakeColour: 'background: gold',
+      pelletColour: 'background: purple',
+      emptyColour: 'background: #333'
     }
   },
   created () {
@@ -72,10 +98,11 @@ export default {
   },
   methods: {
     start () {
-      this.playing = true
+      this.page = 'playing'
       this.initializeGame()
     },
     initializeGame () {
+      this.page = 'playing'
       this.setSnakePosition()
       this.snakeDirection = 'right'
       this.snakePrevDirection = 'right'
@@ -211,7 +238,7 @@ export default {
 
       if ((collided === 'wall') || (collided === 'snake')) {
         window.clearInterval(this.tickFunction)
-        this.gameOver = true
+        this.page = 'gameOver'
         return true
       } else if (collided === 'pellet') {
         this.boardState[this.pelletPosition[0]][this.pelletPosition[1]].state = 'empty'
@@ -283,6 +310,17 @@ export default {
     },
     retry () {
       this.initializeGame()
+    },
+    showLeaderboard () {
+      if (this.name.trim().length === 0) {
+        this.error = 'Please choose a name'
+      } else {
+        this.error = ''
+        this.page = 'leaderboard'
+      }
+    },
+    showChooseName () {
+      this.page = 'chooseName' 
     }
   },
   watch: {
@@ -389,7 +427,7 @@ span {
 }
 
 h2 {
-  font-size: 36pt;
+  font-size: 32pt;
   margin-bottom: 20px;
 }
 
@@ -430,18 +468,8 @@ button:hover {
 #piece {
   width: 20px;
   height: 20px;
-  border: 1px solid #000;
   margin: 2px;
   border-radius: 3px;
-}
-#piece.empty {
-  background: #333;
-}
-#piece.pellet {
-  background: orangered;
-}
-#piece.snake {
-  background: lightgreen;
 }
 
 </style>
