@@ -1,6 +1,6 @@
 <template>
-  <div id='game'>
-    <h1><span :style='textColour'>S</span>nake</h1>
+  <div class='game' :style='boardStyle'>
+    <h1><span :style='textStyle'>S</span>nake</h1>
 
     <div v-if='page === "start"'>
       <p>WASD or Arrow keys to move</p>
@@ -24,21 +24,22 @@
               :id='row + "" + column'
             >
               <span v-if='boardState && boardState[row] && boardState[row][column]'>
-                <div id="piece" class='empty' v-if='boardState[row][column].state === "empty"' :style='emptyColour' />
-                <div id="piece" class='snake' v-if='boardState[row][column].state === "snake"' :style='snakeColour' />
-                <div id="piece" class='pellet' v-if='boardState[row][column].state === "pellet"' :style='pelletColour' />
+                <div class='empty piece' v-if='boardState[row][column].state === "empty"' :style='emptyStyle' />
+                <div class='snake piece' v-if='boardState[row][column].state === "snake"' :style='snakeStyle' />
+                <div class='pellet piece' v-if='boardState[row][column].state === "pellet"' :style='pelletStyle' />
               </span>
             </li>
           </ul>
         </li>
+        <div class='clearfix' />
       </ul>
     </div>
 
     <div v-if='page === "gameOver"' class='game-over'>
-      <h2><span :style='textColour'>G</span>ame <span :style='textColour'>O</span>ver</h2>
+      <h2><span :style='textStyle'>G</span>ame <span :style='textColour'>O</span>ver</h2>
 
-      <p>Pellets: <span :style='textColour'>{{ pelletCount }}</span></p>
-      <p>Spaces: <span :style='textColour'>{{ tick }}</span></p>
+      <p>Pellets: <span :style='textStyle'>{{ pelletCount }}</span></p>
+      <p>Spaces: <span :style='textStyle'>{{ tick }}</span></p>
 
       <button v-on:click='retry'>Retry</button>
       <button v-on:click='showChooseName'>Leaderboard</button>
@@ -53,7 +54,7 @@
 
     <Leaderboard
       v-if='page === "leaderboard"'
-      :textColour='textColour'
+      :textStyle='textStyle'
       :name='name'
     />
   </div>
@@ -67,6 +68,13 @@ export default {
   components: {
     Leaderboard
   },
+  props: [
+    'textStyle',
+    'pelletStyle',
+    'emptyStyle',
+    'snakeStyle',
+    'boardStyle'
+  ],
   data () {
     return {
       name: '',
@@ -75,21 +83,17 @@ export default {
       rows: 10,
       columns: 10,
       snakePosition: [],
-      snakeDirection: 'right',
+      snakeDirection: '',
       snakePrevDirection: '',
       snakeNextDirections: [],
       boardState: [],
       nextPosition: [],
       tick: 0,
-      tickRate: 500,
+      tickRate: 0,
       tickFunction: () => {},
       pelletPosition: [],
       pelletCount: 0,
-      snakeGrowing: false,
-      textColour: 'color: gold',
-      snakeColour: 'background: gold',
-      pelletColour: 'background: purple',
-      emptyColour: 'background: #333'
+      snakeGrowing: false
     }
   },
   created () {
@@ -365,29 +369,32 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
-body {
-	line-height: 1;
-}
+
 ol, ul {
 	list-style: none;
 }
+
 blockquote, q {
 	quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
 	content: '';
 	content: none;
 }
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
 ul {
   list-style: none;
   display: block;
@@ -399,32 +406,11 @@ li {
   display: block;
 }
 
-.row {
-  display: block;
-  clear: both;
-}
-.row > li {
-  display: block;
-  clear: both;
-}
-.column li {
-  float: left;
-}
-
-body {
-  background: #000;
-  color: #fff;
-  font-family: 'Baloo', cursive;
-}
-
 h1 {
   font-size: 48pt;
   margin-bottom: 10px;
 }
 
-span {
-  color: lightgreen;
-}
 
 h2 {
   font-size: 32pt;
@@ -434,23 +420,6 @@ h2 {
 p {
   font-size: 24pt;
   margin-bottom: 10px;
-}
-
-#game {
-  width: 260px;
-  margin: 40px auto 0;
-}
-
-.pellet-count {
-  float: left;
-}
-
-.distance-travelled {
-  float: right;
-}
-
-.clearfix {
-  clear: both;
 }
 
 button {
@@ -465,11 +434,52 @@ button:hover {
   background: #ddd;
 }
 
-#piece {
+.game {
+  width: 240px;
+  margin: 40px auto 0;
+	line-height: 1;
+  font-family: 'Baloo', cursive;
+}
+
+.piece {
   width: 20px;
   height: 20px;
   margin: 2px;
   border-radius: 3px;
+  background: #333;
+}
+
+.snake {
+  background: pink
+}
+.pellet {
+  background: gold;
+}
+
+.row {
+  display: block;
+  clear: both;
+}
+
+.row > li {
+  display: block;
+  clear: both;
+}
+
+.column li {
+  float: left;
+}
+
+.pellet-count {
+  float: left;
+}
+
+.distance-travelled {
+  float: right;
+}
+
+.clearfix {
+  clear: both;
 }
 
 </style>
