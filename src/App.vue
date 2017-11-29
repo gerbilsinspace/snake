@@ -320,7 +320,7 @@ export default {
       }
     },
     showChooseName () {
-      this.page = 'chooseName' 
+      this.page = 'chooseName'
     }
   },
   watch: {
@@ -342,7 +342,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css?family=Baloo');
 
 html, body, div, span, applet, object, iframe,
