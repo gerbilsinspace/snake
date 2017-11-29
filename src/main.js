@@ -2,8 +2,10 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import { db } from './firebase'
 
 Vue.config.productionTip = false
+console.log(db)
 
 /* eslint-disable no-new */
 new Vue({
