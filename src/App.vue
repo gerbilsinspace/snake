@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import Leaderboard from '@/components/Leaderboard'
+import Leaderboard from './components/Leaderboard'
 
 export default {
   name: 'game',
