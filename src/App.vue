@@ -36,7 +36,7 @@
     </div>
 
     <div v-if='page === "gameOver"' class='game-over'>
-      <h2><span :style='textStyle'>G</span>ame <span :style='textColour'>O</span>ver</h2>
+      <h2><span :style='textStyle'>G</span>ame <span :style='textStyle'>O</span>ver</h2>
 
       <p>Pellets: <span :style='textStyle'>{{ pelletCount }}</span></p>
       <p>Spaces: <span :style='textStyle'>{{ tick }}</span></p>
