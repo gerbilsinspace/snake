@@ -1,5 +1,12 @@
 <template>
-  <div class='game' :style='boardStyle'>
+  <v-touch
+    class='game'
+    :style='boardStyle'
+    v-on:swipeup='onSwipeUp'
+    v-on:swiperight='onSwipeRight'
+    v-on:swipedown='onSwipeDown'
+    v-on:swipeleft='onSwipeLeft'
+  >
     <h1><span :style='textStyle'>S</span>nake</h1>
 
     <div v-if='page === "start"'>
@@ -14,7 +21,9 @@
         <div class='distance-travelled'>Travelled {{ tick }}</div>
         <div class='clearfix' />
       </div>
+    </div>
 
+    <div class='board' v-if='page === "playing"'>
       <ul class='row'>
         <li v-for='row in parseInt(rows)' :key='row' :id='"row-" + row'>
           <ul class='column'>
@@ -57,7 +66,7 @@
       :textStyle='textStyle'
       :name='name'
     />
-  </div>
+  </v-touch>
 </template>
 
 <script>
@@ -325,6 +334,18 @@ export default {
     },
     showChooseName () {
       this.page = 'chooseName'
+    },
+    onSwipeUp () {
+      this.snakeNextDirections.push('up')
+    },
+    onSwipeRight () {
+      this.snakeNextDirections.push('right')
+    },
+    onSwipeDown () {
+      this.snakeNextDirections.push('down')
+    },
+    onSwipeLeft () {
+      this.snakeNextDirections.push('left')
     }
   },
   watch: {
@@ -408,18 +429,22 @@ li {
 
 h1 {
   font-size: 48pt;
+  margin-top: 40px;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 
 h2 {
   font-size: 32pt;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 p {
   font-size: 24pt;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 button {
@@ -428,16 +453,35 @@ button {
   font-family: 'Baloo', cursive;
   font-size: 24pt;
   line-height: 24pt;
+  display: block;
+  text-align: center;
+  width: 100%;
 }
 
 button:hover {
   background: #ddd;
 }
 
+@media (max-width: 400px) {
+  .game {
+    width: calc(100% - 20px);
+    margin: 0 auto;
+  }
+  .board {
+    width: 240px;
+    margin: 20px auto 0;
+  }
+}
+
+@media (min-width: 401px) {
+  .game {
+    width: 240px;
+    margin: 40px auto 0;
+  }
+}
+
 .game {
-  width: 240px;
-  margin: 40px auto 0;
-	line-height: 1;
+  line-height: 1;
   font-family: 'Baloo', cursive;
 }
 
@@ -481,5 +525,4 @@ button:hover {
 .clearfix {
   clear: both;
 }
-
 </style>
