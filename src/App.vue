@@ -61,16 +61,26 @@
       <button v-on:click='showLeaderboard'>Save Score</button>
     </div>
 
-    <Leaderboard
+    <div
       v-if='page === "leaderboard"'
       :textStyle='textStyle'
       :name='name'
-    />
+    >
+      <button v-on:click='retry'>Retry</button>
+      <ul>
+        <li v-for='key in leaderboardKeys' :key='key'>
+          <span>{{ leaderboard[key].name }}</span>
+          <span>{{ leaderboard[key].score }}</span>
+          <span>{{ leaderboard[key].travelled }}</span>
+        </li>
+      </ul>
+    </div>
   </v-touch>
 </template>
 
 <script>
 import Leaderboard from './components/Leaderboard'
+import { db } from './firebase'
 
 export default {
   name: 'game',
@@ -103,6 +113,18 @@ export default {
       pelletPosition: [],
       pelletCount: 0,
       snakeGrowing: false
+    }
+  },
+  computed: {
+    leaderboard () {
+      return this.$store.getters.getLeaderboard
+    },
+    leaderboardKeys () {
+      if (this.leaderboard) {
+        return Object.keys(this.leaderboard)
+      }
+
+      return []
     }
   },
   created () {
@@ -329,6 +351,14 @@ export default {
         this.error = 'Please choose a name'
       } else {
         this.error = ''
+
+        // connect to database
+        const newScore = db.ref('snakeLeaderboard').push()
+        newScore.set({
+          name: this.name.trim(),
+          travelled: this.tick,
+          score: this.pelletCount
+        })
         this.page = 'leaderboard'
       }
     },
@@ -434,7 +464,6 @@ h1 {
   text-align: center;
 }
 
-
 h2 {
   font-size: 32pt;
   margin-bottom: 20px;
@@ -460,6 +489,12 @@ button {
 
 button:hover {
   background: #ddd;
+}
+
+input {
+  border: 1px solid #ddd;
+  width: calc(100% - 20px);
+  padding: 10px;
 }
 
 @media (max-width: 400px) {
