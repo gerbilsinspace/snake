@@ -1,13 +1,12 @@
 <template>
   <v-touch
     class='game'
-    :style='boardStyle'
     v-on:swipeup='onMoveUp'
     v-on:swiperight='onMoveRight'
     v-on:swipedown='onMoveDown'
     v-on:swipeleft='onMoveLeft'
   >
-    <h1><span :style='textStyle'>S</span>nake</h1>
+    <h1><span>S</span>nake</h1>
 
     <div v-if='page === "start"'>
       <p>WASD or Arrow keys to move</p>
@@ -33,9 +32,9 @@
               :id='row + "" + column'
             >
               <span v-if='boardState && boardState[row] && boardState[row][column]'>
-                <div class='empty piece' v-if='boardState[row][column].state === "empty"' :style='emptyStyle' />
-                <div class='snake piece' v-if='boardState[row][column].state === "snake"' :style='snakeStyle' />
-                <div class='pellet piece' v-if='boardState[row][column].state === "pellet"' :style='pelletStyle' />
+                <div class='empty piece' v-if='boardState[row][column].state === "empty"' />
+                <div class='snake piece' v-if='boardState[row][column].state === "snake"' />
+                <div class='pellet piece' v-if='boardState[row][column].state === "pellet"' />
               </span>
             </li>
           </ul>
@@ -45,10 +44,10 @@
     </div>
 
     <div v-if='page === "gameOver"' class='game-over'>
-      <h2><span :style='textStyle'>G</span>ame <span :style='textStyle'>O</span>ver</h2>
+      <h2><span>G</span>ame <span>O</span>ver</h2>
 
-      <p>Pellets: <span :style='textStyle'>{{ pelletCount }}</span></p>
-      <p>Spaces: <span :style='textStyle'>{{ tick }}</span></p>
+      <p>Pellets: <span>{{ pelletCount }}</span></p>
+      <p>Spaces: <span>{{ tick }}</span></p>
 
       <button v-on:click='retry'>Retry</button>
       <button v-on:click='showChooseName'>Leaderboard</button>
@@ -63,7 +62,6 @@
 
     <div
       v-if='page === "leaderboard"'
-      :textStyle='textStyle'
       :name='name'
     >
       <button v-on:click='retry'>Retry</button>
@@ -87,13 +85,6 @@ export default {
   components: {
     Leaderboard
   },
-  props: [
-    'textStyle',
-    'pelletStyle',
-    'emptyStyle',
-    'snakeStyle',
-    'boardStyle'
-  ],
   data () {
     return {
       name: '',

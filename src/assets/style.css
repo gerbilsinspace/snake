@@ -46,6 +46,11 @@ table {
 	border-spacing: 0;
 }
 
+body {
+  background: #000;
+  color: #fff;
+}
+
 ul {
   list-style: none;
   display: block;
@@ -86,17 +91,22 @@ button {
   text-align: center;
   width: 100%;
   border-radius: 3px;
-  background: #ddd;
+  background: #333;
+  color: #fff;
 }
 
 button:hover {
-  background: #ddd;
+  background: #444;
 }
 
 input {
-  border: 1px solid #ddd;
+  border: 1px solid #222;
   width: calc(100% - 20px);
   padding: 10px;
+}
+
+span {
+  color: pink;
 }
 
 @media (max-width: 400px) {
@@ -127,7 +137,7 @@ input {
   height: 20px;
   margin: 2px;
   border-radius: 3px;
-  background: #333;
+  background: #555;
 }
 
 .snake {
