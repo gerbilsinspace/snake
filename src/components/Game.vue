@@ -112,7 +112,24 @@ export default {
     },
     leaderboardKeys () {
       if (this.leaderboard) {
-        return Object.keys(this.leaderboard)
+        return Object.keys(this.leaderboard).sort((a, b) => {
+          const aArray = a.split('.')
+          const bArray = b.split('.')
+
+          if (aArray[0] !== bArray[0]) {
+            return this.compareNumbers(aArray[0], bArray[0])
+          } else if (aArray[1] !== bArray[1]) {
+            return this.compareNumbers(aArray[1], bArray[1]) * -1
+          } else {
+            if (aArray[2].toLowerCase() < bArray[2].toLowerCase()) {
+              return 1
+            } else if (aArray[2].toLowerCase() > bArray[2].toLowerCase()) {
+              return -1
+            } else {
+              return 0
+            }
+          }
+        })
       }
 
       return []
@@ -367,6 +384,9 @@ export default {
     },
     onMoveLeft () {
       this.snakeNextDirections.push('left')
+    },
+    compareNumbers (a, b) {
+      return (a - b) * -1
     }
   },
   watch: {
