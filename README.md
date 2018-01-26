@@ -1,6 +1,6 @@
 # snake
 
-> Snake
+> Snake, a Progressive Web App written in Vue.
 
 ## Build Setup
 
