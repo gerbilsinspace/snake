@@ -1,5 +1,7 @@
 # snake
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/gerbilsinspace/snake.svg)](https://greenkeeper.io/)
+
 > Snake, a Progressive Web App written in Vue.
 
 ## Prerequisites
